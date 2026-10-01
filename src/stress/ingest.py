@@ -29,6 +29,9 @@ RECORD_ATTRS = [
 
 DATE_COLS = ["creationDate", "startDate", "endDate"]
 
+# Only heart rate records carry this: 0 = not set, 1 = sedentary, 2 = active
+MOTION_CONTEXT_KEY = "HKMetadataKeyHeartRateMotionContext"
+
 
 def extract_stress_features(dataset, output_dir="data/interim"):
 
@@ -41,12 +44,16 @@ def extract_stress_features(dataset, output_dir="data/interim"):
         if elem.tag == "Record":
             feature = elem.get("type")
             if feature in rows:
-                rows[feature].append({attr: elem.get(attr) for attr in RECORD_ATTRS})
+                row = {attr: elem.get(attr) for attr in RECORD_ATTRS}
+                entry = elem.find(f"MetadataEntry[@key='{MOTION_CONTEXT_KEY}']")
+                row["motionContext"] = entry.get("value") if entry is not None else None
+                rows[feature].append(row)
             elem.clear()
 
     for feature, records in rows.items():
-        df = pd.DataFrame(records, columns=RECORD_ATTRS)
+        df = pd.DataFrame(records, columns=RECORD_ATTRS + ["motionContext"])
         df["value"] = pd.to_numeric(df["value"], errors="coerce")
+        df["motionContext"] = pd.to_numeric(df["motionContext"], errors="coerce").astype("Int64")
         for col in DATE_COLS:
             # Offsets shift with DST, so normalize everything to UTC
             df[col] = pd.to_datetime(df[col], format="%Y-%m-%d %H:%M:%S %z", utc=True)
