@@ -1,0 +1,12 @@
+name: stress
+version: "1.0.0"
+profile: stress         
+
+model-paths: ["models"]
+
+models:
+  stress:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

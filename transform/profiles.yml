@@ -1,0 +1,7 @@
+stress:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ../data/processed/stress.duckdb  
+      threads: 1

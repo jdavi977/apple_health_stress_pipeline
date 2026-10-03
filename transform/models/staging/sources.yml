@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: health
+    schema: main            # DuckDB's default schema
+    tables:
+      - name: hrv
+        identifier: HKQuantityTypeIdentifierHeartRateVariabilitySDNN
+      - name: resting_hr
+        identifier: HKQuantityTypeIdentifierRestingHeartRate
+      - name: heart_rate
+        identifier: HKQuantityTypeIdentifierHeartRate
