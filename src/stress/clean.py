@@ -23,13 +23,13 @@ def clean_data(df):
     clean = df[GENERAL_COLUMNS].copy()
     # Local date each record starts on (DuckDB stores timestamps as UTC, so
     # converted timestamp columns would be identical to the originals)
-    clean["local_date"] = clean["startDate"].dt.tz_convert(LOCAL_TZ).dt.date
+    clean["localDate"] = clean["startDate"].dt.tz_convert(LOCAL_TZ).dt.date
 
     if (table_name == "HKQuantityTypeIdentifierRestingHeartRate"):
         # A day can have more than one record, keep the latest-created one
         clean["creationDate"] = df["creationDate"]
         clean = clean.sort_values(["creationDate", "endDate"])
-        clean = clean.drop_duplicates(subset="local_date", keep="last")
+        clean = clean.drop_duplicates(subset="localDate", keep="last")
         clean = clean.sort_values("startDate")
 
     elif (table_name == "HKQuantityTypeIdentifierHeartRate"):
