@@ -25,18 +25,14 @@ def clean_data(df):
     # converted timestamp columns would be identical to the originals)
     clean["local_date"] = clean["startDate"].dt.tz_convert(LOCAL_TZ).dt.date
 
-    if (table_name == "HKQuantityTypeIdentifierHeartRateVariabilitySDNN"):
-        # Mark readings above 200ms as artifiacts
-        clean["artifact"] = clean["value"] > 200
-
-    elif (table_name == "HKQuantityTypeIdentifierRestingHeartRate"):
+    if (table_name == "HKQuantityTypeIdentifierRestingHeartRate"):
         # A day can have more than one record, keep the latest-created one
         clean["creationDate"] = df["creationDate"]
         clean = clean.sort_values(["creationDate", "endDate"])
         clean = clean.drop_duplicates(subset="local_date", keep="last")
         clean = clean.sort_values("startDate")
 
-    else:
+    elif (table_name == "HKQuantityTypeIdentifierHeartRate"):
         # 0 = not set, 1 = sedentary, 2 = active
         clean["motionContext"] = df["motionContext"]
     
