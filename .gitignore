@@ -1,3 +1,18 @@
 data/*
 
-__pycache__/
+__pycache__
+
+# DuckDB databases and write-ahead logs (WAL)
+*.duckdb*
+*.db*
+*.ddb*
+*.wal
+
+# DuckDB temporary files
+*.tmp/
+
+# dbt
+transform/target/
+transform/logs/
+transform/dbt_packages/
+transform/.user.yml
